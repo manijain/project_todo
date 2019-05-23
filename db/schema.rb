@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2019_05_22_165101) do
     t.datetime "updated_at", null: false
     t.integer "project_id"
     t.integer "employee_id"
+    t.string "status"
   end
 
 end

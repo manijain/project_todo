@@ -1,6 +1,6 @@
 <h1>Editing Todo</h1>
 
-<%= render 'form', todo: @todo %>
+<%= render 'form', project: @project, todo: @todo %>
 
-<%= link_to 'Show', @todo %> |
-<%= link_to 'Back', todos_path %>
+<%= link_to 'Show', project_todo_path(@project, @todo) %> |
+<%= link_to 'Back', project_todos_path(@project) %>

@@ -1,29 +1,58 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Todos</h1>
-
-<table>
-  <thead>
+<h1>To do list</h1><hr/>
+<table class="table">
+  <thead class="thead-dark">
     <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th colspan="3"></th>
+      <th scope="col">#</th>
+      <th scope="col">Task Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Assigned To</th>
+      <th colspan="4" scope="col">Action</th>
     </tr>
   </thead>
-
   <tbody>
-    <% @todos.each do |todo| %>
+    <% @todos.each_with_index do |todo, index| %>
       <tr>
-        <td><%= todo.name %></td>
-        <td><%= todo.description %></td>
-        <td><%= link_to 'Show', todo %></td>
-        <td><%= link_to 'Edit', edit_todo_path(todo) %></td>
-        <td><%= link_to 'Destroy', todo, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td scope="col"><%= index + 1 %></td>
+        <td scope="col"><%= todo.name %></td>
+        <td scope="col"><%= todo.status.present? ? todo.status : "Pending" %></td>
+        <td scope="col"><%= todo.employee.present? ? todo.employee.first_name : "Not Assigned" %></td>
+        <td scope="col"><%= link_to 'Show', project_todo_path(@project, todo) %></td>
+        <% if can? :update, @todo %>
+        <td scope="col" ><%= link_to 'Edit', edit_project_todo_path(@project, todo) %></td>
+        <% end %>
+        <% if can? :destroy, @todo %>
+        <td scope="col" ><%= link_to 'Destroy', project_todo_path(@project, todo), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
+        <td scope="col" ><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal">Assigne to Employee</button></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
+<% if can? :create, @todo %>
+  <%= link_to 'Add New Todo', new_project_todo_path(@project), class: "btn btn-primary" %><br/>
+<% end %>
 
-<%= link_to 'New Todo', new_todo_path %>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Assign Todo's to Employees</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-main">
+        <%= form_tag({controller: "dashboard", action: "assign_todo"}, remote: true, class: "form_control") do %>
+          <%= select_tag "employees", options_from_collection_for_select(@employees, "id", "first_name")
+ %>
+          <%= submit_tag %>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <a class="navbar-brand" href="#">Project Todo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExample09">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <%= link_to "Home", root_path, class: "nav-link" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "About", "#", class: "nav-link" %>
+        </li>
+        <% if employee_signed_in? %>
+          <li class="nav-item">
+          <%= link_to 'Edit profile', edit_employee_registration_path, :class => 'nav-link' %></li>
+          <% if current_employee.role.try(:name) == "Manager" %>
+            <li class="nav-item">
+            <%= link_to 'Manage Project', projects_path, :class => 'nav-link' %></li>
+          <% else %>
+            <li class="nav-item">
+            <%= link_to 'Your Todo', '#', :class => 'nav-link' %></li>
+          <% end %>
+           <li class="nav-item">
+            <%= link_to "Logout", destroy_employee_session_path, method: :delete, :class => 'nav-link' %></li>
+        <% else %>
+          <li class="nav-item">
+          <%= link_to "Sign up", new_employee_registration_path, :class => 'nav-link' %></li>
+          <li class="nav-item">
+          <%= link_to "Login", new_employee_session_path, :class => 'nav-link' %></li>
+        <% end %>
+      </ul>
+      <form class="form-inline my-2 my-md-0">
+        <% if employee_signed_in? %>
+          <p>Welcome !!  <strong><%= current_employee.first_name.capitalize %></strong></p>
+        <% end %>
+      </form>
+    </div>
+  </nav>
