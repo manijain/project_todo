@@ -17,3 +17,11 @@
 //= require popper
 //= require bootstrap
 //= require_tree .
+
+function setProjectTodo(todo_id) {
+  $("#modal-main #todo_id").val(todo_id);
+};
+
+function setProjectEmployee(project_id) {
+  $("#modal-main #project_id").val(project_id);
+}

@@ -7,4 +7,12 @@ class Employee < ApplicationRecord
   has_many :assignments
   has_many :projects, through: :assignments
   has_many :todos
+
+  def is_employee?
+    role.present? ? role.try(:name) == "Employee" : true
+  end
+
+  def is_manager?
+    role.present? ? role.try(:name) == "Manager" : false
+  end
 end

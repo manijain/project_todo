@@ -33,7 +33,7 @@
 
   <div class="field">
     <%= f.label :role_id, "Role" %><br />
-    <%= f.select :role_id, options_from_collection_for_select(get_role_list, "id", "name"), autocomplete: "role_id" %>
+    <%= f.select :role_id, options_from_collection_for_select(get_role_list, "id", "name", 1), autocomplete: "role_id" %>
   </div>
 
   <div class="actions">

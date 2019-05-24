@@ -15,7 +15,7 @@
         <td scope="col"><%= index + 1 %></td>
         <td scope="col"><%= todo.name %></td>
         <td scope="col"><%= todo.status.present? ? todo.status : "Pending" %></td>
-        <td scope="col"><%= todo.employee.present? ? todo.employee.first_name : "Not Assigned" %></td>
+        <td scope="col"><%= todo.employee.present? ? todo.employee.try(:first_name).capitalize : "Not Assigned" %></td>
         <td scope="col"><%= link_to 'Show', project_todo_path(@project, todo) %></td>
         <% if can? :update, @todo %>
         <td scope="col" ><%= link_to 'Edit', edit_project_todo_path(@project, todo) %></td>
@@ -23,7 +23,7 @@
         <% if can? :destroy, @todo %>
         <td scope="col" ><%= link_to 'Destroy', project_todo_path(@project, todo), method: :delete, data: { confirm: 'Are you sure?' } %></td>
         <% end %>
-        <td scope="col" ><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal">Assigne to Employee</button></td>
+        <td scope="col" ><% unless todo.employee.present? %><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectTodo(<%= todo.id%>);">Assign Todo's</button><% end %></td>
       </tr>
     <% end %>
   </tbody>
@@ -37,22 +37,24 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Assign Todo's to Employees</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Assign Todo's</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="modal-main">
+      
         <%= form_tag({controller: "dashboard", action: "assign_todo"}, remote: true, class: "form_control") do %>
-          <%= select_tag "employees", options_from_collection_for_select(@employees, "id", "first_name")
+          <div class="modal-body" id="modal-main">
+          <%= hidden_field_tag "todo_id" %>
+          <%= select_tag "employee_id", options_from_collection_for_select(@employees, "id", "first_name"), class: "form-control"
  %>
-          <%= submit_tag %>
-        <% end %>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <%= submit_tag "Save Changes", class: "btn btn-primary" %>
+          </div>
+      <% end %>
     </div>
   </div>
 </div>

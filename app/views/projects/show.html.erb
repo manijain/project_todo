@@ -1,24 +1,37 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Name:</strong>
-  <%= @project.name %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @project.description %>
-</p>
-
-<p>
-  <strong>Start date:</strong>
-  <%= @project.start_date %>
-</p>
-
-<p>
-  <strong>End date:</strong>
-  <%= @project.end_date %>
-</p>
-
-<%= link_to 'Edit', edit_project_path(@project) %> |
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4"><u>Project Name:</u> <%= @project.name %></h1>
+    <p class="lead"><u>Description:</u> <%= @project.description %></p>
+    <p class="lead"><u>Start Date:</u><%= @project.start_date %></p>
+    <p class="lead"><u>End Date:</u><%= @project.end_date %></p>
+    <%= link_to 'Edit Project', edit_project_path(@project), class: "btn btn-primary btn-sm" %>
+    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectEmployee(<%= @project.id%>);">Assign Project</button>
+  </div>
+</div>
 <%= link_to 'Back', projects_path %>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Assign Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+        <%= form_tag({controller: "dashboard", action: "assign_employee"}, remote: true, class: "form_control") do %>
+          <div class="modal-body" id="modal-main">
+          <%= hidden_field_tag "project_id" %>
+          <%= select_tag "employee_id", options_from_collection_for_select(@employees, "id", "first_name"), class: "form-control"
+ %>
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <%= submit_tag "Save Changes", class: "btn btn-primary" %>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
