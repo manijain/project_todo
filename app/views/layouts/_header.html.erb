@@ -33,7 +33,7 @@
       </ul>
       <form class="form-inline my-2 my-md-0">
         <% if employee_signed_in? %>
-          <p>Welcome !!  <strong><%= current_employee.first_name.capitalize %></strong></p>
+          <p>Welcome !!  <strong><%= current_employee.displayname.try(:capitalize) %></strong></p>
         <% end %>
       </form>
     </div>

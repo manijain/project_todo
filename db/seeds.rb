@@ -5,4 +5,5 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-role = Role.create([{name: "Developer"}, {name: "Manager"}])
+roles = Role.create([{name: "Developer"}, {name: "Manager"}])
+employees = Employee.create([{first_name: "Mahesh", last_name: "Developer", email: 'developer@gmail.com', password: "password", password_confirmation: "password", role_id: '1'}, {first_name: "Manish", last_name: "Manager", email: 'manager@gmail.com', password: "password", password_confirmation: "password", role_id: '2'}])
