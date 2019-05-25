@@ -2,12 +2,11 @@ class TodosController < ApplicationController
   before_action :set_todo, only: [:show, :edit, :update, :destroy]
   before_action :set_project
 
-
   # GET /todos
   # GET /todos.json
   def index
-    @todos = Todo.all
-    @employees = Employee.all
+    @todos = @project.todos
+    @employees = @project.employees
   end
 
   # GET /todos/1
@@ -32,7 +31,7 @@ class TodosController < ApplicationController
 
     respond_to do |format|
       if @todo.save
-        format.html { redirect_to project_todo_path(@project, @todo), notice: 'Todo was successfully created.' }
+        format.html { redirect_to project_todos_path(@project), notice: 'Todo was successfully created.' }
         format.json { render :show, status: :created, location: @todo }
       else
         format.html { render :new }
@@ -77,6 +76,6 @@ class TodosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def todo_params
-      params.require(:todo).permit(:name, :description)
+      params.require(:todo).permit(:name, :description, :status)
     end
 end

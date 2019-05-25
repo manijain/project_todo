@@ -1,0 +1,105 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<h1>Your team Todo's status</h1><hr/>
+<% if employee_todos.blank? && project_todos.blank? %>
+ <h3>Not Available</h3> 
+<% else %>
+  <h5>(1) Developer wise todo lists</h5>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Status</th>
+        <% employees.each do |employee| %>
+          <th scope="col"><%= employee.displayname %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% employee_todos.each do |key, values| %>
+        <tr>
+          <td scope="col"><%= key %></td>
+          <% employees.each do |emp| %>
+            <% todo_list = values.select {|v| v.employee_id == emp.id } %>
+            <% if todo_list.present? %>
+              <td scope="col">             
+                <% todo_list.each do |todo| %>
+                  <br/><%= todo.name %>
+                <% end %>
+              </td>
+            <% else %>
+              <td scope="col"></td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table><hr/>
+
+  <h5>(2) Project wise todo lists</h5>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Status</th>
+        <% projects.each do |project| %>
+          <th scope="col"><%= project.name %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% project_todos.each do |key, values| %>
+        <tr>
+          <td scope="col"><%= key %></td>
+          <% projects.each do |project| %>
+            <% todo_list = values.select {|v| v.project_id == project.id } %>
+            <% if todo_list.present? %>
+              <td scope="col">             
+                <% todo_list.each do |todo| %>
+                  <br/><%= todo.name %>
+                <% end %>
+              </td>
+            <% else %>
+              <td scope="col"></td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table><hr/>
+
+  <h5>(3) show pie chart project wise total status</h5>
+
+  <div id="chart_div"></div>
+  <% result = [] %>
+  <% todo_status_count.each do |key, values| %>
+    <% result << [key, values] %>
+  <% end %>
+
+  <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows(<%= raw result.to_json.html_safe %>);
+
+        // Set chart options
+        var options = {'title':'Overall status of Todo tasks',
+                       'width':600,
+                       'height':400};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+
+<% end %>

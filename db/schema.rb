@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 2019_05_24_094046) do
     t.datetime "updated_at", null: false
     t.integer "project_id"
     t.integer "employee_id"
-    t.string "status"
+    t.string "status", default: "New"
     t.integer "assigned_by_id"
   end
 

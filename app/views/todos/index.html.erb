@@ -15,15 +15,16 @@
         <td scope="col"><%= index + 1 %></td>
         <td scope="col"><%= todo.name %></td>
         <td scope="col"><%= todo.status.present? ? todo.status : "Pending" %></td>
-        <td scope="col"><%= todo.employee.present? ? todo.employee.try(:first_name).capitalize : "Not Assigned" %></td>
+        <td scope="col"><%= todo.employee.present? ? todo.employee.try(:displayname).capitalize : "NA" %></td>
         <td scope="col"><%= link_to 'Show', project_todo_path(@project, todo) %></td>
         <% if can? :update, @todo %>
         <td scope="col" ><%= link_to 'Edit', edit_project_todo_path(@project, todo) %></td>
         <% end %>
         <% if can? :destroy, @todo %>
-        <td scope="col" ><%= link_to 'Destroy', project_todo_path(@project, todo), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td scope="col" ><%= link_to 'Delete', project_todo_path(@project, todo), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <td scope="col">
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectTodo(<%= todo.id%>);">Assign</button></td>
         <% end %>
-        <td scope="col" ><% unless todo.employee.present? %><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectTodo(<%= todo.id%>);">Assign Todo's</button><% end %></td>
       </tr>
     <% end %>
   </tbody>
@@ -46,9 +47,11 @@
         <%= form_tag({controller: "dashboard", action: "assign_todo"}, remote: true, class: "form_control") do %>
           <div class="modal-body" id="modal-main">
           <%= hidden_field_tag "todo_id" %>
-          <%= select_tag "employee_id", options_from_collection_for_select(@employees, "id", "first_name"), class: "form-control"
+          <div class="form_control">
+          <%= label_tag "Please select employee to assign todo" %>
+          <%= select_tag "employee_id", options_from_collection_for_select(@employees, "id", "displayname"), class: "form-control"
  %>
-          
+          </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

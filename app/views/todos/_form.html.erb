@@ -11,17 +11,24 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.label :name %>
-    <%= form.text_field :name %>
+    <%= form.text_field :name, class: "form-control" %>
   </div>
 
-  <div class="field">
+  <div class="form-group">
     <%= form.label :description %>
-    <%= form.text_area :description %>
+    <%= form.text_area :description, class: "form-control" %>
   </div>
+
+  <% if params[:action] == "edit" %>
+    <div class="form-group">
+     <%= form.label :status %>
+     <%= form.select :status, ["In progress","Done"], {}, {class: "form-control"} %>
+    </div>
+  <% end %>
 
   <div class="actions">
-    <%= form.submit %>
-  </div>
+    <%= form.submit "Save", class: "btn btn-primary" %>
+  </div><br/>
 <% end %>

@@ -11,7 +11,8 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.json
   def show
-    @employees = Employee.all
+    @assigned_employees = @project.employees
+    @employees = Employee.get_available_employees(@project, current_employee.id)
   end
 
   # GET /projects/new
@@ -30,7 +31,7 @@ class ProjectsController < ApplicationController
     @project.created_by_id = current_employee.id
     respond_to do |format|
       if @project.save
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        format.html { redirect_to projects_path, notice: 'Project was successfully created.' }
         format.json { render :show, status: :created, location: @project }
       else
         format.html { render :new }

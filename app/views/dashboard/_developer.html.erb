@@ -1,0 +1,60 @@
+<h1>Your Todo Lists</h1><hr/>
+<% if todos.blank? %>
+ <h3>Not Assigned Todo</h3> 
+<% else %>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Project Name</th>
+        <th scope="col">Status</th>
+        <th colspan="3" scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% todos.each_with_index do |todo, index| %>
+        <tr>
+          <td scope="col"><%= index + 1 %></td>
+          <td scope="col"><%= link_to todo.name, project_todo_path(todo.project, todo) %></td>
+          <td scope="col"><%= todo.project.try(:name) %></td>
+          <td scope="col"><%= todo.try(:status) %></td>
+            <% if can? :update, todo %>
+              <td scope="col">
+                <% unless todo.try(:status) == "Completed" %>
+                  <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectTodo(<%= todo.id%>);">Change Status</button>
+                <% end %>
+              </td>
+            <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Todo Status</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <%= form_tag({controller: "dashboard", action: "update_todo"}, class: "form_control") do %>
+          <div class="modal-body" id="modal-main">
+          <div class="form_control">
+            <%= label_tag "Please select status" %>
+            <%= hidden_field_tag "todo_id" %>
+            <%= select_tag "status", options_for_select(["In Progress", "Done"], "In Progress"), {class: "form-control"}
+ %>
+          </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <%= submit_tag "Save Changes", class: "btn btn-primary" %>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>

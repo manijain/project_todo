@@ -1,2 +1,13 @@
-<h1>Dashboard#index</h1>
-<p>Find me in app/views/dashboard/index.html.erb</p>
+<% if employee_signed_in? %>
+  <% if current_employee.is_manager? %>
+    <%= render partial: 'dashboard/manager', locals: { employees: @employees, projects: @projects, employee_todos: @employee_todos, project_todos: @project_todos, todo_status_count: @todo_status_count } %>
+  <% else %>
+    <%= render partial: 'dashboard/developer', locals: { todos: @todos } %>
+  <% end %>
+<% else %>
+<center>
+  <h1>Welcome to Tasks management tool.</h1>
+  <p>For more details kindly create you account as "Developer" or "Manager"</p>
+  <%= link_to "Register", new_employee_registration_path, :class => 'btn btn-success' %></li>
+</center>
+<% end %>

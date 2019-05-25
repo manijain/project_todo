@@ -1,13 +1,43 @@
 <div class="jumbotron jumbotron-fluid">
   <div class="container">
-    <h1 class="display-4"><u>Project Name:</u> <%= @project.name %></h1>
+    <h3 class="display-5"><%= @project.name %></h3>
     <p class="lead"><u>Description:</u> <%= @project.description %></p>
     <p class="lead"><u>Start Date:</u><%= @project.start_date %></p>
     <p class="lead"><u>End Date:</u><%= @project.end_date %></p>
-    <%= link_to 'Edit Project', edit_project_path(@project), class: "btn btn-primary btn-sm" %>
-    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectEmployee(<%= @project.id%>);">Assign Project</button>
+    <% if can? :update, @project %>
+      <%= link_to 'Edit Project', edit_project_path(@project), class: "btn btn-secondary btn-sm" %>
+    <% end %>
+    <% if can? :destroy, @project %>
+      <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModal" onClick="setProjectEmployee(<%= @project.id%>);">Assign Project</button>
+      <%= link_to 'Manage Todo', project_todos_path(@project), class: "btn btn-primary btn-sm" %>
+    <% end %>
   </div>
-</div>
+</div><hr/>
+
+<% if can? :update, @project %>
+<h4>List of assigned employees for "<%= @project.name %>"</h4>
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Employee Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Assigned By</th>
+      <th colspan="4" scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @assigned_employees.each_with_index do |emp, index| %>
+      <tr>
+        <td scope="col"><%= index + 1 %></td>
+        <td scope="col"><%= emp.displayname %></td>
+        <td scope="col"><%= emp.email %></td>
+        <td scope="col"><%= get_assignee(emp, @project)%></td>
+        <td scope="col"></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table><hr/>
 <%= link_to 'Back', projects_path %>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -20,12 +50,14 @@
         </button>
       </div>
       
-        <%= form_tag({controller: "dashboard", action: "assign_employee"}, remote: true, class: "form_control") do %>
+        <%= form_tag({controller: "dashboard", action: "assign_project"}, remote: true, class: "form_control") do %>
           <div class="modal-body" id="modal-main">
           <%= hidden_field_tag "project_id" %>
-          <%= select_tag "employee_id", options_from_collection_for_select(@employees, "id", "first_name"), class: "form-control"
+          <div class="form_control">
+            <%= label_tag "Please select employee to assign project" %>
+            <%= select_tag "employee_id", options_from_collection_for_select(@employees, "id", "displayname"), class: "form-control"
  %>
-          
+          </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -35,3 +67,4 @@
     </div>
   </div>
 </div>
+<% end %>

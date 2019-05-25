@@ -1,6 +1,8 @@
-<h1>Editing Todo</h1>
+<div class="col-sm-8">
+  <h1>Editing Todo</h1><hr/>
 
-<%= render 'form', project: @project, todo: @todo %>
+  <%= render 'form', project: @project, todo: @todo %>
 
-<%= link_to 'Show', project_todo_path(@project, @todo) %> |
-<%= link_to 'Back', project_todos_path(@project) %>
+  <%= link_to 'Show', project_todo_path(@project, @todo) %> |
+  <%= link_to 'Back', project_todos_path(@project) %>
+</div>
